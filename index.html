@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Head content here -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NetCode</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/codemirror.min.css">
+    <!-- Include CodeMirror Dracula theme -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/theme/dracula.min.css">
+    
+    <!-- Include CodeMirror language modes for C++ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+    
+
+    <style>
+        body {
+            background-color: rgba(0, 0, 0, 0.9);
+        }
+        
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+        <!-- Navbar content here -->
+        <div class="container">
+            <a class="navbar-brand" href="#">
+               <h3>NET CODE</h3>
+            </a>
+        </div>
+    </nav>
+    <div class="row my-2 mx-1">
+        <!-- Other content here -->
+        <div class="col-auto">
+            <select class="form-select bg-dark text-white border-0 my-1" id="lang">
+                    <option>Bash</option>
+                    <option>C#</option>
+                    <option selected>C++</option>   
+                    <option>C</option>
+                    <option>Java</option>
+                    <option>Python</option>
+                    <option>Ruby</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <button type="button" class="btn btn-danger my-1" id="run" onclick="run()">
+                Run
+            </button>
+        </div>
+        <div class="col-auto">
+            <button type="button" class="btn btn-info text-white my-1" id="liveToastBtn" onclick="saveCode()">
+                <i class="bi bi-file-earmark-check-fill"></i>&nbsp;Save
+            </button>
+        </div>
+        <div class="col-auto">
+            <button type="button" class="btn btn-light my-1" onclick="downloadCode()">
+                <i class="bi bi-download"></i>&nbsp;
+            </button>
+        </div>
+        <div class="col-auto">
+            <button type="button" class="btn btn-light my-1" onclick="importCode()">
+                <i class="bi bi-upload"></i>&nbsp;
+            </button>
+        </div>
+        <div class="col-auto">
+            <a href="signup.html">
+                <button type="button" class="btn btn-primary my-1" id="loginBtn">
+                    <i class="bi bi-person"></i>&nbsp;Login
+                </button>
+            </a>
+        </div>
+        
+        
+        
+        <div class="container">
+            <div class="row m-1">
+                <div class="col-lg-8 mb-3">
+                    <!-- Other content here -->
+                    <textarea type="text" class="form-control bg-dark text-white" aria-label="First name" id="source"
+                        style="width: 100%; height: 500px;">
+#include <iostream>
+#include <string>
+                        
+int main() {
+  std::string name;
+  std::cin >> name;
+        
+  std::cout << "Hi " << name << "!\n";
+  std::cerr << "This is a dummy error message " << name << ".\n";
+  std::cout << "But don't worry " << name << ", everything is fine! :)\n";
+        
+  return 0;
+}
+</textarea>
+                </div>
+                <div class="col-lg-4">
+                    <div class="me-1 mb-2">
+                        <div class="card text-bg-dark p-0" style="min-height: 150px;">
+                            <div class="card-header border-info">Input</div>
+                            <div class="card-body p-0">
+                                <textarea type="text" class="form-control bg-dark h-100 border-0 text-white" maxlength="100000"
+                                    id="input"></textarea>
+                            </div>
+                        </div>
+                        <div class="text-dark-emphasis m-0">
+                            <p id="status"></p>
+                            <p id="time"></p>
+                            <p id="memory"></p>
+                        </div>
+                        <div class="me-1 mt-2">
+                            <div class="card text-bg-dark p-0" style="min-height: 300px;">
+                                <div class="card-header border-info ">Output</div>
+                                <div class="card-body">
+                                    <textarea readonly id="output" class="form-control bg-dark h-300 border-0 text-white" maxlength="100000"
+                                        style="width: calc(100%); height: 200px; "></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/codemirror.min.js"></script>
+    <!-- Include the addon for matchBrackets -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/addon/edit/matchbrackets.min.js"></script>
+    <!-- Include the C-like language mode for CodeMirror -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/mode/clike/clike.min.js"></script>
+    <!-- Include your custom script.js -->
+    <script src="script.js"></script>
+
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/addon/edit/closebrackets.js"></script>
+<script>
+    const defaultCodeSnippets = {
+        'Bash': '#!/bin/bash\necho "Hello, World!"',
+            'C#': 'using System;\nclass Program {\n    static void Main() {\n        Console.WriteLine("Hello, World!");\n    }\n}',
+            'C++': '#include <iostream>\n\nint main() {\n    std::cout << "Hello, World!" << std::endl;\n    return 0;\n}',
+            'C': '#include <stdio.h>\n\nint main() {\n    printf("Hello, World!\\n");\n    return 0;\n}',
+             'Java': 'public class Main {\n   	public static void main(String[] args){\n        System.out.println("Hello World");\n    }\n}',
+            'Python': 'print("Hello, World!")',
+            'Ruby': 'puts "Hello, World!"'
+    // Add default snippets for other languages...
+};
+document.getElementById("lang").addEventListener("change", function () {
+    var selectedLanguage = this.value;
+    if (defaultCodeSnippets[selectedLanguage]) {
+        editor.setValue(defaultCodeSnippets[selectedLanguage]);
+    }
+});
+
+var editor = CodeMirror.fromTextArea(document.getElementById("source"), {
+    lineNumbers: true,
+    theme: "dracula",
+    mode: "text/x-c++src",
+    autoCloseBrackets: true, // Auto-close brackets
+    extraKeys: {
+        "'('": function (cm) {
+            cm.closeBrackets(cm, '('); // Auto-close parentheses
+        },
+        "'{'": function (cm) {
+            cm.closeBrackets(cm, '{'); // Auto-close curly braces
+        },
+        "'['": function (cm) {
+            cm.closeBrackets(cm, '['); // Auto-close square brackets
+        },
+        "'\"'": function (cm) {
+            cm.closeBrackets(cm, '"'); // Auto-close double quotes
+        },
+        "Enter": "newlineAndIndentContinueMarkdownList"
+    }
+});
+
+// Set the height of the editor
+var editorWrapper = editor.getWrapperElement();
+editorWrapper.style.height = "70vh"; // Set the height as desired
+
+
+// Add this function to your <script> section
+    function downloadCode() {
+    var code = editor.getValue(); // Get the code from the CodeMirror editor
+    var blob = new Blob([code], { type: "text/plain;charset=utf-8" }); // Create a Blob containing the code
+    saveAs(blob, "myCode.cpp"); // Trigger the download with the file name "myCode.cpp"
+}
+
+
+
+// Add this function to your <script> section
+    function importCode() {
+    var input = document.createElement("input");
+    input.type = "file";
+
+    input.addEventListener("change", function () {
+        var file = input.files[0];
+        var reader = new FileReader();
+
+        reader.onload = function (event) {
+            var importedCode = event.target.result;
+            editor.setValue(importedCode); // Set the imported code in the CodeMirror editor 
+
+            // Reset the selected language to avoid confusion
+            document.getElementById("lang").selectedIndex = -1;
+        };
+
+        reader.readAsText(file);
+    });
+
+    input.click();
+}
+
+
+
+
+// Modify this part of your existing JavaScript code
+function saveCode() {
+    var code = editor.getValue(); // Get the code from the CodeMirror editor
+    // Show a confirmation alert
+    var confirmSave = confirm("Are you sure you want to save this code?");
+    if (confirmSave) {
+        localStorage.setItem("savedCode", code); // Save the code to local storage
+        
+        // Show a success notification
+        alert("Code saved successfully!");
+    }
+}
+
+
+
+
+
+
+
+    // Other functions like save(), run(), etc.
+</script>
+
+</html>
